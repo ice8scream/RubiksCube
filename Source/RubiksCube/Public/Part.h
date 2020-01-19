@@ -4,14 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "CubeSideColor.h"
 
 #include "Part.generated.h"
-
-UENUM()
-enum class CubeSideColor : int8 {
-	Red, Orange, Yellow, Green, Blue, Purple
-};
-
 
 
 UCLASS()
