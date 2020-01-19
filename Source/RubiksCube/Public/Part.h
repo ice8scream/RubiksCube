@@ -3,20 +3,20 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+#include "Components/SceneComponent.h"
 #include "CubeSideColor.h"
 
 #include "Part.generated.h"
 
 
-UCLASS()
-class RUBIKSCUBE_API APart : public AActor
+UCLASS( ClassGroup = (Custom), meta = (BlueprintSpawnableComponent) )
+class RUBIKSCUBE_API UPart : public USceneComponent
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	APart();
+	UPart();
 	//APart(int8 plateCount/* = 3*/, TArray<CubeSideColor> plateColors/* = { CubeSideColor::Red, CubeSideColor::Orange, CubeSideColor::Yellow }*/);
 
 protected:
@@ -25,7 +25,7 @@ protected:
 
 public:	
 	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	//UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* SuperMesh;

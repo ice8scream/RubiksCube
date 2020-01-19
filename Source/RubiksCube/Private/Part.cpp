@@ -6,9 +6,9 @@
 #include "Components/StaticMeshComponent.h"
 #include "ConstructorHelpers.h"
 
-APart::APart() {
+UPart::UPart() {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryComponentTick.bCanEverTick = true;
 //}
 //
 //// Sets default values
@@ -20,9 +20,9 @@ APart::APart() {
 
 }
 
-void APart::CreatePartCore() {
+void UPart::CreatePartCore() {
 	SuperMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Part"));
-	SetRootComponent(SuperMesh);
+
 
 	ConstructorHelpers::FObjectFinder<UStaticMesh> CubeAsset(TEXT("/Game/parts/SidePart.SidePart"));
 
@@ -41,7 +41,7 @@ void APart::CreatePartCore() {
 	}
 }
 
-void APart::AddPlates(int8 plateCount, TArray<CubeSideColor> plateColors) {
+void UPart::AddPlates(int8 plateCount, TArray<CubeSideColor> plateColors) {
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> PlateAsset(TEXT("/Game/parts/PartPlate.PartPlate"));
 
 	if (PlateAsset.Succeeded()) {
@@ -79,16 +79,16 @@ void APart::AddPlates(int8 plateCount, TArray<CubeSideColor> plateColors) {
 }
 
 // Called when the game starts or when spawned
-void APart::BeginPlay()
+void UPart::BeginPlay()
 {
 	Super::BeginPlay();
 	
 }
 
 // Called every frame
-void APart::Tick(float DeltaTime)
+void UPart::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
-	Super::Tick(DeltaTime);
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	// ...
 }
-
