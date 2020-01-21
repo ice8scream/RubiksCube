@@ -24,6 +24,28 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UStaticMesh* PartObject;
+	UStaticMesh* PlateObject;
+
 private:
+
 	TArray<ASide> sides;
+
+	float GetAngleToRotate(FVector2D flatPos, float Z);
+
+	class Part {
+	public:
+		Part();
+		Part(UStaticMeshComponent& part);
+		void RotatePart(FRotator addRotation);
+		void PlacePart(FVector moveOnVector);
+
+		UStaticMeshComponent* PartRoot;
+
+		static int8 NumOfParts;
+		static int8 NumOfPlates;
+
+	};
+
+	Part CreatePart(FVector Position);
 };
