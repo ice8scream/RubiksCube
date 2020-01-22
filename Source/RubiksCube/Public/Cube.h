@@ -26,6 +26,10 @@ public:
 
 	UStaticMesh* PartObject;
 	UStaticMesh* PlateObject;
+	UMaterial* PartMaterial;
+
+	TArray<FString> CubeSideColorName = { "Red", "Orange", "Yellow", "Green", "Blue", "Purple" };
+	TArray<UMaterial*> sideColors;
 
 private:
 
