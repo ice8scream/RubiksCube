@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Side.h"
+#include "Materials/Material.h"
 #include "Cube.generated.h"
 
 UCLASS()
@@ -33,8 +33,6 @@ public:
 
 private:
 
-	TArray<ASide> sides;
-
 	float GetAngleToRotate(FVector2D flatPos, float Z);
 
 	class Part {
@@ -45,7 +43,6 @@ private:
 		void PlacePart(FVector moveOnVector);
 
 		UStaticMeshComponent* PartRoot;
-
 		static int8 NumOfParts;
 		static int8 NumOfPlates;
 
