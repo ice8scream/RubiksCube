@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Materials/Material.h"
+#include "Components/BoxComponent.h"
 #include "Cube.generated.h"
 
 UCLASS()
@@ -24,29 +25,37 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UStaticMesh* PartObject;
-	UStaticMesh* PlateObject;
-	UMaterial* PartMaterial;
+	UPROPERTY(EditAnywhere)
+		UStaticMesh* PartObject;
+
+	UPROPERTY(EditAnywhere)
+		UStaticMesh* PlateObject;
+
+	UPROPERTY(EditAnywhere)
+		UMaterial* PartMaterial;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		USceneComponent* RotationCenter;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		UBoxComponent* InputHandleBox;
 
 	TArray<FString> CubeSideColorName = { "Red", "Orange", "Yellow", "Green", "Blue", "Purple" };
 	TArray<UMaterial*> sideColors;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TArray<UStaticMeshComponent*> Parts;
+
+	UFUNCTION(BlueprintCallable)
+		void AttachToRotateCenter(int32 PartIndex);
+
+	UFUNCTION(BlueprintCallable)
+		void RotateSide(TArray<int32> Side);
 
 private:
 
 	float GetAngleToRotate(FVector2D flatPos, float Z);
 
-	class Part {
-	public:
-		Part();
-		Part(UStaticMeshComponent& part);
-		void RotatePart(FRotator addRotation);
-		void PlacePart(FVector moveOnVector);
 
-		UStaticMeshComponent* PartRoot;
-		static int8 NumOfParts;
-		static int8 NumOfPlates;
-
-	};
-
-	Part CreatePart(FVector Position);
+	UStaticMeshComponent* CreatePart(FVector Position);
 };
