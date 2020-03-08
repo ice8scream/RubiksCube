@@ -50,7 +50,7 @@ public:
 		void AttachToRotateCenter(int32 PartIndex);
 
 	UFUNCTION(BlueprintCallable)
-		void RotateSide(TArray<int32> Side);
+		void AttachSideToRotatationCenter(int32 RotationAxisIndex, int32 RotationRowIndex);
 
 private:
 

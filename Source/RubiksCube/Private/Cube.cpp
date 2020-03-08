@@ -5,6 +5,8 @@
 #include "Components/StaticMeshComponent.h"
 #include "ConstructorHelpers.h"
 
+//#define DEBUG
+
 ACube::ACube()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -16,17 +18,15 @@ ACube::ACube()
 	RotationCenter = CreateDefaultSubobject<USceneComponent>("RotationCenter");
 
 	RotationCenter->AttachToComponent(RootComponent,FAttachmentTransformRules::KeepRelativeTransform);
-	if (IsValid(RotationCenter)) 
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Valid"));
-	}
-	else 
+	if (!IsValid(RotationCenter))  
 	{
 		UE_LOG(LogTemp, Error, TEXT("InValid"));
+		return;
 	}
 
 	InputHandleBox = CreateDefaultSubobject<UBoxComponent>("Cube Handle Box");
 	InputHandleBox->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	InputHandleBox->SetCollisionProfileName("BlockAllDynamic");
 	InputHandleBox->InitBoxExtent(FVector(150)); // TODO ice8scream :: maybe mace const
 	InputHandleBox->ComponentTags.Push("Cube Handle Box");
 
@@ -79,7 +79,7 @@ void ACube::AttachToRotateCenter(int32 PartIndex)
 {
 	if (IsValid(Parts[PartIndex]))
 	{
-		bool what = Parts[PartIndex]->AttachToComponent(RotationCenter, FAttachmentTransformRules::KeepRelativeTransform);
+		bool what = Parts[PartIndex]->AttachToComponent(RotationCenter, FAttachmentTransformRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, EAttachmentRule::KeepRelative, true));
 		if (!what)
 		{
 			UE_LOG(LogTemp, Error, TEXT("Part is not attached"));
@@ -91,23 +91,19 @@ void ACube::AttachToRotateCenter(int32 PartIndex)
 	}
 }
 
-void ACube::RotateSide(TArray<int32> Side)
+void ACube::AttachSideToRotatationCenter(int32 RotationAxisIndex, int32 RotationRowIndex)
 {
+#ifdef DEBUG
+	UE_LOG(LogTemp, Warning, TEXT("%d, %d, %d"), Side[0], Side[1], Side[2]);
+#endif // DEBUG
 
-	UE_LOG(LogTemp, Error, TEXT("%d, %d, %d"), Side[0], Side[1], Side[2]);
 
 	TArray<int32> MinIndex, MaxIndex;
-	MinIndex.Init(0, Side.Num());
-	MaxIndex.Init(2, Side.Num());
+	MinIndex.Init(0, 3);
+	MaxIndex.Init(2, 3);
 
-	for (int32 i = 0; i < Side.Num(); i++)
-	{
-		if (Side[i] != -1)
-		{
-			MinIndex[i] = Side[i];
-			MaxIndex[i] = Side[i];
-		}
-	}
+	MinIndex[RotationAxisIndex] = RotationRowIndex;
+	MaxIndex[RotationAxisIndex] = RotationRowIndex;
 
 	for (int32 x = MinIndex[0]; x <= MaxIndex[0]; x++)
 	{
@@ -120,11 +116,12 @@ void ACube::RotateSide(TArray<int32> Side)
 			}
 		}
 	}
-
+#ifdef DEBUG
 	for (auto child : Parts)
 	{
 		UE_LOG(LogTemp, Error, TEXT("Parent component is %s"), *(child->GetAttachParent()->GetName())); // TODO ice8scream :: make var
 	}
+#endif // DEBUG
 
 }
 
@@ -160,13 +157,15 @@ UStaticMeshComponent* ACube::CreatePart(FVector Position)
 
 	Position += FVector(-1);
 	Position.Z *= -1;
-
+#ifdef DEBUG
 	UE_LOG(LogTemp, Warning, TEXT("%s"), *newPartName); // TODO ice8scream :: delete
+#endif // DEBUG
 
 	// TODO ice8scream :: maybe make function----
 	UStaticMeshComponent* newPart = CreateDefaultSubobject<UStaticMeshComponent>(*newPartName); 
 
 	newPart->SetStaticMesh(PartObject);
+	newPart->SetCollisionProfileName(TEXT("NoCollision"));
 	newPart->SetMaterial(0, PartMaterial);
 
 	newPart->AttachToComponent(RootComponent,
@@ -182,6 +181,7 @@ UStaticMeshComponent* ACube::CreatePart(FVector Position)
 		FString newPlateName("Plate" + newPartName + "-"+ FString::FromInt(i));
 		auto newPlate = CreateDefaultSubobject<UStaticMeshComponent>(*newPlateName);
 		newPlate->SetStaticMesh(PlateObject);
+		newPlate->SetCollisionProfileName(TEXT("NoCollision"));
 		newPlate->AttachToComponent(newPart, FAttachmentTransformRules::SnapToTargetIncludingScale,
 			*("Plate" + FString::FromInt(i + 1)));
 		newPlate->SetRelativeScale3D({ 0.9,0.9,0.1 });
