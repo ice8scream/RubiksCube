@@ -169,7 +169,7 @@ UStaticMeshComponent* ACube::CreatePart(FVector Position)
 	newPart->SetMaterial(0, PartMaterial);
 
 	newPart->AttachToComponent(RootComponent,
-		FAttachmentTransformRules::SnapToTargetIncludingScale);
+		FAttachmentTransformRules::KeepRelativeTransform);
 
 	float YawAngle = GetAngleToRotate({ Position.X, Position.Y }, Position.Z);
 	newPart->SetRelativeRotation({0, YawAngle, (-Position.Z + 1) * -90});
@@ -182,7 +182,7 @@ UStaticMeshComponent* ACube::CreatePart(FVector Position)
 		auto newPlate = CreateDefaultSubobject<UStaticMeshComponent>(*newPlateName);
 		newPlate->SetStaticMesh(PlateObject);
 		newPlate->SetCollisionProfileName(TEXT("NoCollision"));
-		newPlate->AttachToComponent(newPart, FAttachmentTransformRules::SnapToTargetIncludingScale,
+		newPlate->AttachToComponent(newPart, FAttachmentTransformRules::KeepRelativeTransform,
 			*("Plate" + FString::FromInt(i + 1)));
 		newPlate->SetRelativeScale3D({ 0.9,0.9,0.1 });
 		auto plateUpVector = newPlate->GetUpVector();
